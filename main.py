@@ -2,7 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 #CONSTANTES
-BACKGROUND_COLOR = "#B1DDC6"
+BACKGROUND_COLOR = "#FFF8E3"
 
 #TODO: CREANDO LA CONFIGURACION INICIAL DE NUESTRA APP
 #creando ventana
@@ -43,14 +43,24 @@ my_canvas.create_image(400, 263, image=card_front_image, anchor='center')
 # my_canvas.create_image(0, 20, image=card_front_imagen, anchor='nw')
 
 
-#labels donde iran las palabras del vocabulario
-title=my_canvas.create_text(400,150, text='Title' , fill='white', font=("Ariel", 40, "italic"))
+#Creamos overlay para mejorar la legibilidad del texto sobre la imagen de fondo
+overlay=my_canvas.create_rectangle(200,100,590, 350, fill='black', stipple='gray50')
+
+
+#donde iran las palabras del vocabulario, lo ponemos encima del overlay
+# title=my_canvas.create_text(400,150, text='Title' , fill='pink', font=("Ariel", 40, "italic"))
 
 
 
-word=my_canvas.create_text(400, 253, text='Word', fill='white', font=("Ariel", 60, "bold"))
+# word=my_canvas.create_text(400, 253, text='Word', fill='white', font=("Ariel", 60, "bold"))
+
+# labels donde iran las palabras del vocabulario
+title_label=Label(my_canvas, text='Title', fg='white', bg='#000000', font=("Ariel", 40, "italic"))
+title_label.place(x=400, y=150, anchor='center')
 
 
+word_label=Label(my_canvas, text='Word', fg='white', bg='#000000', font=("Ariel", 60, "bold"))
+word_label.place(x=400, y=263, anchor='center')
 
 #para correr nuestra app
 window.mainloop()
