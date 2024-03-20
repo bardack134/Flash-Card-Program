@@ -7,6 +7,12 @@ from pandas import *
 #CONSTANTES
 BACKGROUND_COLOR = "#FFF8E3"
 
+#TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
+def see_card_back():
+    pass
+
+
+
 # TODO: CREAR UNA FUNCION PARA TOMAR ALEATORIAMENTE JAPANESE WORDS DEL ARCHIVO vocabulary.csv
 #leemos el archivo .csv y creamos un data frame
 vocabulary=read_csv("vocabulary.csv")
@@ -16,20 +22,7 @@ vocabulary=read_csv("vocabulary.csv")
 data_dictitonary=vocabulary.to_dict(orient='records')
 
 
-#tomamos un diccionario random de nuestra lista de diccionarios
-diccionay_random=random.choice(data_dictitonary)
-
-
-#usando las claves del diccionario, obtenemos los valores, que son nuestras palabras
-japanese_word=diccionay_random['Japanese']
-hiragana_word=diccionay_random['Hiragana']
-english_word=diccionay_random['English']
-print(japanese_word)
-
-
-def next_card():
-    global diccionay_random
-    
+def next_card():  
     #volvemos a escoger aletoriamente una palabra del diccionario
     diccionay_random=random.choice(data_dictitonary)
     
@@ -62,7 +55,7 @@ my_canvas=Canvas(window, bg=BACKGROUND_COLOR,  width=800,  height=526, highlight
 
 
 #pongo el canvas en mi ventana
-my_canvas.grid(row=0, column=0, columnspan=2)
+my_canvas.grid(row=0, column=0, columnspan=3)
 
 
 #mi foto esta demasiodo grande por lo que usare el modulo PIL(python image libray para redimencionarla)
@@ -97,22 +90,37 @@ overlay=my_canvas.create_rectangle(190,100,600, 420, fill='black',  stipple='gra
 
 #donde iran las palabras del vocabulario, lo ponemos encima del overlay
 title=my_canvas.create_text(400,150, text='Japanese' , fill='pink', font=("Ariel", 40, "italic"))
-word=my_canvas.create_text(400, 253, text=japanese_word, fill='white', font=("Ariel", 60, "bold"))
-hiragana=my_canvas.create_text(400, 353, text=hiragana_word, fill='white', font=("Ariel", 30, "bold"))
+word=my_canvas.create_text(400, 253, text='kanji', fill='white', font=("Ariel", 60, "bold"))
+hiragana=my_canvas.create_text(400, 353, text='hiragana', fill='white', font=("Ariel", 30, "bold"))
 
 
-#Vamos a gregar botones a nuestra interfaz
-check_image=PhotoImage(file='right.png')
-check_button=Button(window, image=check_image, highlightthickness=0, command=next_card)
-check_button.grid(row=1, column=1,  pady=15)
+# Cargando y redimensionando la imagen para el botón 'check', Creando  objeto PhotoImage de Tkinter  para la imagen redimensionada
+check_image=Image.open('right.png')
+check_image_resized=check_image.resize((75,74),  Image.Resampling.LANCZOS)
+check_button_img=ImageTk.PhotoImage(check_image_resized)
+check_button=Button(window, image=check_button_img, highlightthickness=0, command=next_card)
+check_button.grid(row=1, column=2,  pady=15)
 
 
+# Cargando y redimensionando la imagen para el botón 'wrong', Creando  objeto PhotoImage de Tkinter  para la imagen redimensionada
 wrong_image=Image.open('wrong.png')
-wrong_image=wrong_image.resize((75,62),  Image.Resampling.LANCZOS)
-wrong_image=ImageTk.PhotoImage(file='wrong.png')
-wrong_button=Button(window, image=wrong_image,  highlightthickness=0, command=next_card)
+wrong_image_resized=wrong_image.resize((75,74),  Image.Resampling.LANCZOS)
+wrong_button_img=ImageTk.PhotoImage(wrong_image_resized)
+# Creando el botón 'wrong' con la imagen y asignando la función 'next_card' como comando
+wrong_button=Button(window, image=wrong_button_img,  highlightthickness=0, command=next_card)
 wrong_button.grid(row=1, column=0,  pady=15)
 
+
+# Cargando y redimensionando la imagen para el botón 'see_answer', Creando  objeto PhotoImage de Tkinter  para la imagen redimensionada
+see_answer_img=Image.open('see.png')
+see_answer_img_resized=see_answer_img.resize((42,42), Image.Resampling.LANCZOS)
+see_button_img=ImageTk.PhotoImage(see_answer_img_resized)
+# Creando el botón con la imagen y asignando la función 'next_card' como comando
+see_answer_boton=Button(window, image=see_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=see_card_back)
+see_answer_boton.grid(row=1, column=1, pady=15)
+
+#llamo a la funcion para que al comenzar el programa me muestra de inmediatamente una palabra kun
+next_card()
 
 
 #para correr nuestra app
