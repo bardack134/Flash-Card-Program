@@ -12,18 +12,19 @@ BACKGROUND_COLOR = "#FFF8E3"
 
 #TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
 def see_card_back():
+    #new background of our card
     my_canvas.itemconfigure(card_front_canvas, image=card_back_image )
 
 
     #cambio el titulo del card de japones a ingles
-    my_canvas.itemconfigure(title, text="English")
+    my_canvas.itemconfigure(title, text="English", fill='white')
     
     
     #cambio la palabra del japones al ingles
     my_canvas.itemconfigure(word, text=english_word)
     
     
-    #ya no necesito la palabra en giragana por lo que la elimino
+    #ya no necesito la palabra en hiragana por lo que la elimino
     my_canvas.itemconfigure(hiragana, text="")
     
     
@@ -37,6 +38,7 @@ data_dictitonary=vocabulary.to_dict(orient='records')
 
 
 def next_card():  
+    #deseo que esta variable sea global para usarla en la funcion 'see_card_back'
     global english_word
     
     #volvemos a escoger aletoriamente una palabra del diccionario
@@ -47,13 +49,21 @@ def next_card():
     japanese_word=diccionay_random['Japanese']
     hiragana_word=diccionay_random['Hiragana']
     english_word=diccionay_random['English']
-    print(english_word)
+    
     
     #agregando la palabra en japones a nuestra card
     my_canvas.itemconfigure(word, text=japanese_word)
     my_canvas.itemconfigure(hiragana, text=hiragana_word)
 
 
+    #cambio la imagend de fondo del canvas 
+    my_canvas.itemconfigure(card_front_canvas, image=card_front_image)
+    
+    
+    #cambio el titulo del card denuevo a japones, con el color rosado
+    my_canvas.itemconfigure(title, text="Japanese", fill='pink')
+    
+    
 #TODO: CREANDO LA CONFIGURACION INICIAL DE NUESTRA APP
 #creando ventana
 window=Tk()
