@@ -28,23 +28,19 @@ def see_card_back():
     
     
 # TODO: CREAR UNA FUNCION PARA TOMAR ALEATORIAMENTE JAPANESE WORDS DEL ARCHIVO vocabulary.csv
-#leemos el archivo .csv y creamos un data frame
-vocabulary=read_csv("words_to_learn.csv")
+#si se presenta una falla al intentar abrir el archivo significa que no hay palabras agregadas
+try:
+    #leemos el archivo .csv y creamos un data frame
+    vocabulary=read_csv("words_to_learn.csv")
+
+    
+except:
+    #si sucede una falla usaremos entonces el archivo vocabulary.csv que contiene todo el vocabulario agregado
+    vocabulary=read_csv("vocabulary.csv")   
 
 
 #creamos una lista de diccionarios, donce cada row es un diccionario y las claves son el nombre de las columnas
 data_dictitonary=vocabulary.to_dict(orient='records')
-
-
-# si len() es igual a 0, significa que no hay datos en este documento, es decir no hay palabras para aprender
-if len(data_dictitonary)==0:
-    
-    #en este caso usaremos entonces el archivo vocabulary.csv que contiene todo el vocabulario agregado
-    vocabulary=read_csv("vocabulary.csv")
-    
-    
-    #creamos una lista de diccionarios, donce cada row es un diccionario y las claves son el nombre de las columnas
-    data_dictitonary=vocabulary.to_dict(orient='records')
 
 
 #TODO:SI EL USUARIO OPRIME EL ✅ CHECK BUTTON, LA PALABRA DEBE SER REMOVIDA, DEL GUPO DE PALABRAS A APRENDER
