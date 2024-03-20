@@ -7,12 +7,26 @@ from pandas import *
 #CONSTANTES
 BACKGROUND_COLOR = "#FFF8E3"
 
+#mi foto esta demasiodo grande por lo que usare el modulo PIL(python image libray para redimencionarla)
+
+
 #TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
 def see_card_back():
-    pass
+    my_canvas.itemconfigure(card_front_canvas, image=card_back_image )
 
 
-
+    #cambio el titulo del card de japones a ingles
+    my_canvas.itemconfigure(title, text="English")
+    
+    
+    #cambio la palabra del japones al ingles
+    my_canvas.itemconfigure(word, text=english_word)
+    
+    
+    #ya no necesito la palabra en giragana por lo que la elimino
+    my_canvas.itemconfigure(hiragana, text="")
+    
+    
 # TODO: CREAR UNA FUNCION PARA TOMAR ALEATORIAMENTE JAPANESE WORDS DEL ARCHIVO vocabulary.csv
 #leemos el archivo .csv y creamos un data frame
 vocabulary=read_csv("vocabulary.csv")
@@ -23,6 +37,8 @@ data_dictitonary=vocabulary.to_dict(orient='records')
 
 
 def next_card():  
+    global english_word
+    
     #volvemos a escoger aletoriamente una palabra del diccionario
     diccionay_random=random.choice(data_dictitonary)
     
@@ -30,7 +46,8 @@ def next_card():
     #usando la clave del diccionario, obtenemos el  valor, que es nuestra palabra
     japanese_word=diccionay_random['Japanese']
     hiragana_word=diccionay_random['Hiragana']
-    
+    english_word=diccionay_random['English']
+    print(english_word)
     
     #agregando la palabra en japones a nuestra card
     my_canvas.itemconfigure(word, text=japanese_word)
@@ -72,7 +89,7 @@ card_front_image = ImageTk.PhotoImage(front_image_resized)
 
 
 #creo mi foto dentro del canvas
-my_canvas.create_image(400, 263, image=card_front_image, anchor='center')
+card_front_canvas=my_canvas.create_image(400, 263, image=card_front_image, anchor='center')
 # my_canvas.create_image(0, 20, image=card_front_imagen, anchor='nw')
 
 
@@ -80,13 +97,14 @@ my_canvas.create_image(400, 263, image=card_front_image, anchor='center')
 overlay=my_canvas.create_rectangle(190,100,600, 420, fill='black',  stipple='gray50')
 
 
-# labels donde iran las palabras del vocabulario
-# title_label=Label(my_canvas, text='Title', fg='white', bg='#000000', font=("Ariel", 40, "italic"))
-# title_label.place(x=400, y=150, anchor='center')
+#Cargo mi imagen para la parte de atras del card "back card", esto debe hacerse por fuera de la funcion para que sean variables Globales
+back_image=Image.open("img2.png")
+#con el comando resize podemos redimencionar nuestras imagenes
+back_image_resized = back_image.resize((800, 526), Image.Resampling.LANCZOS)
+#usamos nuestra 'back_image_resized' que hasido redimencionada
+#Usamos ImageTk.PhotoImage para convertirlo en un formato compatible con Tkinter antes de poder usarlo
+card_back_image = ImageTk.PhotoImage(back_image_resized)
 
-
-# word_label=Label(my_canvas, text='Word', fg='white', bg='#000000', font=("Ariel", 60, "bold"))
-# word_label.place(x=400, y=263, anchor='center')
 
 #donde iran las palabras del vocabulario, lo ponemos encima del overlay
 title=my_canvas.create_text(400,150, text='Japanese' , fill='pink', font=("Ariel", 40, "italic"))
