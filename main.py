@@ -1,5 +1,6 @@
 import random
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from pandas import *
 
@@ -7,9 +8,7 @@ from pandas import *
 #CONSTANTES
 BACKGROUND_COLOR = "#FFF8E3"
 
-#mi foto esta demasiodo grande por lo que usare el modulo PIL(python image libray para redimencionarla)
-
-
+  
 #TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
 def see_card_back():
     #new background of our card
@@ -30,39 +29,78 @@ def see_card_back():
     
 # TODO: CREAR UNA FUNCION PARA TOMAR ALEATORIAMENTE JAPANESE WORDS DEL ARCHIVO vocabulary.csv
 #leemos el archivo .csv y creamos un data frame
-vocabulary=read_csv("vocabulary.csv")
+vocabulary=read_csv("words_to_learn.csv")
 
 
 #creamos una lista de diccionarios, donce cada row es un diccionario y las claves son el nombre de las columnas
 data_dictitonary=vocabulary.to_dict(orient='records')
 
 
+# si len() es igual a 0, significa que no hay datos en este documento, es decir no hay palabras para aprender
+if len(data_dictitonary)==0:
+    
+    #en este caso usaremos entonces el archivo vocabulary.csv que contiene todo el vocabulario agregado
+    vocabulary=read_csv("vocabulary.csv")
+    
+    
+    #creamos una lista de diccionarios, donce cada row es un diccionario y las claves son el nombre de las columnas
+    data_dictitonary=vocabulary.to_dict(orient='records')
+
+
+#TODO:SI EL USUARIO OPRIME EL ✅ CHECK BUTTON, LA PALABRA DEBE SER REMOVIDA, DEL GUPO DE PALABRAS A APRENDER
+def know_word(): 
+    
+    if len(data_dictitonary)==0:
+        
+        messagebox.showinfo("information", "There is no new vocabulary to learn")
+    
+    
+    else:
+        #eliminando valor actual de la lista de diccionarios
+        data_dictitonary.remove(current_row)
+
+        
+        #creando dataframe del diccionario actualizado
+        words_to_learn_df=DataFrame(data=data_dictitonary)
+
+
+        #creando nuevo archivo .csv del nuevo dataframe
+        words_to_learn_df.to_csv('words_to_learn.csv', index=False)
+
+        next_card()
+    
+    
 def next_card():  
-    #deseo que esta variable sea global para usarla en la funcion 'see_card_back'
-    global english_word
-    
-    #volvemos a escoger aletoriamente una palabra del diccionario
-    diccionay_random=random.choice(data_dictitonary)
+    #deseo que esta variable sea global para usarla en la funcion 'see_card_back' , y know_word, respectivamente
+    global english_word, current_row
     
     
-    #usando la clave del diccionario, obtenemos el  valor, que es nuestra palabra
-    japanese_word=diccionay_random['Japanese']
-    hiragana_word=diccionay_random['Hiragana']
-    english_word=diccionay_random['English']
-    
-    
-    #agregando la palabra en japones a nuestra card
-    my_canvas.itemconfigure(word, text=japanese_word)
-    my_canvas.itemconfigure(hiragana, text=hiragana_word)
+    #manejo errores en el caso de que ya no hayan palabras para mostrar
+    try:
+        #volvemos a escoger aletoriamente una palabra del diccionario
+        current_row=random.choice(data_dictitonary)
+        
+        
+        #usando la clave del diccionario, obtenemos el  valor, que es nuestra palabra
+        japanese_word=current_row['Japanese']
+        hiragana_word=current_row['Hiragana']
+        english_word=current_row['English']
+        
+        
+        #agregando la palabra en japones a nuestra card
+        my_canvas.itemconfigure(word, text=japanese_word)
+        my_canvas.itemconfigure(hiragana, text=hiragana_word)
 
 
-    #cambio la imagend de fondo del canvas 
-    my_canvas.itemconfigure(card_front_canvas, image=card_front_image)
+        #cambio la imagend de fondo del canvas 
+        my_canvas.itemconfigure(card_front_canvas, image=card_front_image)
+        
+        
+        #cambio el titulo del card denuevo a japones, con el color rosado
+        my_canvas.itemconfigure(title, text="Japanese", fill='pink')
     
-    
-    #cambio el titulo del card denuevo a japones, con el color rosado
-    my_canvas.itemconfigure(title, text="Japanese", fill='pink')
-    
+    except:
+        messagebox.showinfo("information", "There is no new vocabulary to learn")
     
 #TODO: CREANDO LA CONFIGURACION INICIAL DE NUESTRA APP
 #creando ventana
@@ -126,7 +164,7 @@ hiragana=my_canvas.create_text(400, 353, text='hiragana', fill='white', font=("A
 check_image=Image.open('right.png')
 check_image_resized=check_image.resize((75,74),  Image.Resampling.LANCZOS)
 check_button_img=ImageTk.PhotoImage(check_image_resized)
-check_button=Button(window, image=check_button_img, highlightthickness=0, command=next_card)
+check_button=Button(window, image=check_button_img, highlightthickness=0, command=know_word)
 check_button.grid(row=1, column=2,  pady=15)
 
 
@@ -147,8 +185,10 @@ see_button_img=ImageTk.PhotoImage(see_answer_img_resized)
 see_answer_boton=Button(window, image=see_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=see_card_back)
 see_answer_boton.grid(row=1, column=1, pady=15)
 
+
 #llamo a la funcion para que al comenzar el programa me muestra de inmediatamente una palabra kun
 next_card()
+print(f'the first row of words is {current_row}')
 
 
 #para correr nuestra app
