@@ -1,14 +1,45 @@
 import random
 from tkinter import *
 from tkinter import messagebox
+from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
 from pandas import *
 
 
 #CONSTANTES
 BACKGROUND_COLOR = "#FFF8E3"
+previous_row={}
 
-  
+#TODO FUNCION PARA AGREGAR NUEVAS APALABRAS
+def add_words():
+    kanji=askstring("Kanji", "please enter the new word in kanji format: ")
+    hiragana=askstring("Hiragana", "please enter the new word in hiragana format: ")
+    english_word=askstring("English Word", "please enter the meaning of the new word in english format: ")
+
+
+    new_row_dict={'Japanese':kanji, 'Hiragana':hiragana, 'English':english_word}
+    
+    
+    #leemos el archivo .csv y creamos un data frame
+    vocabulary=read_csv("vocabulary.csv")   
+    
+    
+    #creamos una lista de diccionarios, donce cada row es un diccionario y las claves son el nombre de las columnas
+    data_dictitonary=vocabulary.to_dict(orient='records')
+    
+    
+    data_dictitonary=data_dictitonary.append(new_row_dict)
+    
+    
+    #creando dataframe del diccionario actualizado
+    vocabulary=DataFrame(data=data_dictitonary)
+
+
+    #actualizamos el archivo con el nuevo vocabulario
+    vocabulary.to_csv('vocabulary.csv', index=False)
+    
+    
+    
 #TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
 def see_card_back():
     #new background of our card
@@ -77,6 +108,7 @@ def next_card():
         current_row=random.choice(data_dictitonary)
         
         
+           
         #usando la clave del diccionario, obtenemos el  valor, que es nuestra palabra
         japanese_word=current_row['Japanese']
         hiragana_word=current_row['Hiragana']
@@ -94,6 +126,9 @@ def next_card():
         
         #cambio el titulo del card denuevo a japones, con el color rosado
         my_canvas.itemconfigure(title, text="Japanese", fill='pink')
+        
+        
+        previous_row=current_row
     
     except:
         messagebox.showinfo("information", "There is no new vocabulary to learn")
@@ -180,6 +215,11 @@ see_button_img=ImageTk.PhotoImage(see_answer_img_resized)
 # Creando el botón con la imagen y asignando la función 'next_card' como comando
 see_answer_boton=Button(window, image=see_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=see_card_back)
 see_answer_boton.grid(row=1, column=1, pady=15)
+
+
+#boton para agregar nuevas apalabras
+add_button=Button(window, text='Add', highlightthickness=0, bg="white", width=40, command=add_words, relief=GROOVE)
+add_button.grid(row=2, column=0, pady=15, columnspan=3)
 
 
 #llamo a la funcion para que al comenzar el programa me muestra de inmediatamente una palabra kun
