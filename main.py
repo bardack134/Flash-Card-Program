@@ -12,6 +12,8 @@ previous_row={}
 
 #TODO FUNCION PARA AGREGAR NUEVAS APALABRAS
 def add_words():
+    global vocabulary, data_dictitonary 
+    
     kanji=askstring("Kanji", "please enter the new word in kanji format: ")
     hiragana=askstring("Hiragana", "please enter the new word in hiragana format: ")
     english_word=askstring("English Word", "please enter the meaning of the new word in english format: ")
@@ -19,6 +21,7 @@ def add_words():
 
     new_row_dict={'Japanese':kanji, 'Hiragana':hiragana, 'English':english_word}
     
+    print(new_row_dict)
     
     #leemos el archivo .csv y creamos un data frame
     vocabulary=read_csv("vocabulary.csv")   
@@ -28,16 +31,26 @@ def add_words():
     data_dictitonary=vocabulary.to_dict(orient='records')
     
     
-    data_dictitonary=data_dictitonary.append(new_row_dict)
+    data_dictitonary.append(new_row_dict)
     
     
     #creando dataframe del diccionario actualizado
-    vocabulary=DataFrame(data=data_dictitonary)
+    new_dataframe=DataFrame(data=data_dictitonary)
 
 
-    #actualizamos el archivo con el nuevo vocabulario
-    vocabulary.to_csv('vocabulary.csv', index=False)
+    # actualizamos el archivo con el nuevo vocabulario
+    new_dataframe.to_csv('vocabulary.csv', index=False)
     
+    
+    messagebox.showinfo("information", "Correctly added")
+
+    
+    #volvemos a cargar el archivo ya actualizado
+    vocabulary=read_csv("vocabulary.csv")   
+    
+    
+    #volovemos a crear una lista de diccionarios
+    data_dictitonary=vocabulary.to_dict(orient='records')
     
     
 #TODO CREAR BOTON QUE ME MUESTRA LA PARTE DE ATRAS DE LA CARD CON EL SIGNIFICADO EN INGLES
@@ -54,8 +67,7 @@ def see_card_back():
     my_canvas.itemconfigure(word, text=english_word)
     
     
-    #ya no necesito la palabra en hiragana por lo que la elimino
-    my_canvas.itemconfigure(hiragana, text="")
+    my_canvas.itemconfigure(hiragana, text=hiragana_word)
     
     
 # TODO: CREAR UNA FUNCION PARA TOMAR ALEATORIAMENTE JAPANESE WORDS DEL ARCHIVO vocabulary.csv
@@ -99,7 +111,7 @@ def know_word():
     
 def next_card():  
     #deseo que esta variable sea global para usarla en la funcion 'see_card_back' , y know_word, respectivamente
-    global english_word, current_row
+    global english_word, current_row, hiragana_word
     
     
     #manejo errores en el caso de que ya no hayan palabras para mostrar
@@ -117,8 +129,7 @@ def next_card():
         
         #agregando la palabra en japones a nuestra card
         my_canvas.itemconfigure(word, text=japanese_word)
-        my_canvas.itemconfigure(hiragana, text=hiragana_word)
-
+        
 
         #cambio la imagend de fondo del canvas 
         my_canvas.itemconfigure(card_front_canvas, image=card_front_image)
@@ -127,9 +138,8 @@ def next_card():
         #cambio el titulo del card denuevo a japones, con el color rosado
         my_canvas.itemconfigure(title, text="Japanese", fill='pink')
         
-        
-        previous_row=current_row
-    
+
+        my_canvas.itemconfigure(hiragana, text="")
     except:
         messagebox.showinfo("information", "There is no new vocabulary to learn")
     
@@ -188,7 +198,7 @@ card_back_image = ImageTk.PhotoImage(back_image_resized)
 #donde iran las palabras del vocabulario, lo ponemos encima del overlay
 title=my_canvas.create_text(400,150, text='Japanese' , fill='pink', font=("Ariel", 40, "italic"))
 word=my_canvas.create_text(400, 253, text='kanji', fill='white', font=("Ariel", 60, "bold"))
-hiragana=my_canvas.create_text(400, 353, text='hiragana', fill='white', font=("Ariel", 30, "bold"))
+hiragana=my_canvas.create_text(400, 353, text='', fill='white', font=("Ariel", 30, "bold"))
 
 
 # Cargando y redimensionando la imagen para el botón 'check', Creando  objeto PhotoImage de Tkinter  para la imagen redimensionada
