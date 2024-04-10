@@ -1,13 +1,20 @@
 # Flash-Card-Program
-I am currently studying Japanese, and I have created a flashcard app to assist me in learning and memorizing Japanese vocabulary in Kanji, their readings in Hiragana, and their meanings in English.
 
+## Table of Contents
+- Description
+- Tools Used
+- Screenshots
 
-- *I created the graphical interface using the Tkinter library.
-- *The application displays flashcards with Japanese words on one side and their English meaning on the other side.
-- *Add New Words: The application provides a function for users to add new Japanese words, along with their hiragana writing and English meaning.
-- *PIL (Python Imaging Library): Used to resize and manipulate images in the user interface.
-- *Pandas: Used to handle data in the form of DataFrames (to load, manipulate, and save data in CSV files).
-- *Random: Used for the random selection of words from the vocabulary list.
+## Description
+This is a flashcard application designed to assist in learning and memorizing Japanese vocabulary. It features Kanji, their readings in Hiragana, and their meanings in English. The application displays flashcards with Japanese words on one side and their English meaning on the other side. It also provides a function for users to add new Japanese words, along with their hiragana writing and English meaning.
+
+## Tools Used
+- **Tkinter**: Used to create the graphical interface.
+- **PIL (Python Imaging Library)**: Used to resize and manipulate images in the user interface.
+- **Pandas**: Used to handle data in the form of DataFrames (to load, manipulate, and save data in CSV files).
+- **Random**: Used for the random selection of words from the vocabulary list.
+
+## Screenshots
 
 
 ![app img 1](https://github.com/bardack134/Flash-Card-Program/assets/142977989/cea94d95-0785-41ce-8f2d-390810d0c948)
